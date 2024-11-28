@@ -1,8 +1,10 @@
+cmake_minimum_required(VERSION 3.6..3.16)
+
 project(ODAS)
-cmake_minimum_required(VERSION 2.4.6..3.16)
 
 if(COMMAND cmake_policy)
     cmake_policy(SET CMP0003 NEW)
+    cmake_policy(SET CMP0007 NEW)
 endif(COMMAND cmake_policy)
 
 option(ODAS_BUILD_SHARED_LIBRARY "Build shared library" ON)
