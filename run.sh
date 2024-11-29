@@ -6,6 +6,7 @@
 # step1;mkdir build; cd build;
 # step2; cmake -DCMAKE_INSTALL_PREFIX=`pwd`/release ..
 # step3; make; make install;
+# 执行测试数据：./odaslive -c ReSpeaker.cfg -s
 
 # ./configure --enable-float --enable-shared --prefix=/opt/fftw3
 # ./gitcompile --prefix=/opt/alsa-lib
