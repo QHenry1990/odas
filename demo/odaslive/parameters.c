@@ -150,7 +150,9 @@
         unsigned int tmpInt2;
 
         cfg = src_hops_cfg_construct();
+#ifdef LINUXSOUND
         cfg->channel_map = NULL; // Only used in pulseaudio mode
+#endif
 
         // +----------------------------------------------------------+
         // | Format                                                   |
@@ -213,7 +215,9 @@
                 tmpStr2 = parameters_lookup_string(fileConfig, "raw.interface.source");
 
                 cfg->interface = interface_construct_pulseaudio(tmpStr2);
+#ifdef LINUXSOUND
                 cfg->channel_map = parameters_pa_channel_map_config(fileConfig);
+#endif
 
                 free((void *) tmpStr2);
 
@@ -256,7 +260,7 @@
         return cfg;
 
     }
-
+#ifdef LINUXSOUND
     pa_channel_map* parameters_pa_channel_map_config(const char* fileConfig)
     {
         unsigned int nChannels = parameters_count(fileConfig, "raw.interface.channelmap");
@@ -293,7 +297,7 @@
         
         return map;
     }
-
+#endif
     mod_mapping_cfg * parameters_mod_mapping_mics_config(const char * fileConfig) {
 
         mod_mapping_cfg * cfg;

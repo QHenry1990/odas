@@ -1,38 +1,29 @@
-cmake_minimum_required(VERSION 3.6..3.16)
+cmake_minimum_required(VERSION 3.26)
+project(odas)
 
-project(ODAS)
+option(ODAS_BUILD_SHARED_LIBRARY "Build shared library" OFF)
+option(LINUXSOUND "build on ubuntu " OFF) # hhquan add
+option(ODAS_INSTALL_LIBRARY "install odas " ON)
+option(ODAS_INSTALL_EXECUTABLES "Install the odaslive and odasserver executables along with the odas library" ON)
 
-if(COMMAND cmake_policy)
-    cmake_policy(SET CMP0003 NEW)
-    cmake_policy(SET CMP0007 NEW)
-endif(COMMAND cmake_policy)
+include_directories(
+    ${PROJECT_SOURCE_DIR}/include/odas
+    /opt/fftw3/include
+    /opt/libconfig/include
+)
 
-option(ODAS_BUILD_SHARED_LIBRARY "Build shared library" ON)
-option(ODAS_INSTALL_EXECUTABLES "Install the odaslive and odasserver executables along with the odas library" OFF)
-option(ODAS_FORCE_BIN_AND_LIB_DIRS "Force the installation of the odas library and executables in the bin and lib directories" ON)
-option(ODAS_DISABLE_INSTALL "Disable the installation of the odas library and executables" OFF)
+link_directories(
+    /opt/fftw3/lib
+    /opt/libconfig/lib
+)
 
-
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(PC_FFTW3 REQUIRED fftw3f)
-pkg_check_modules(PC_ALSA REQUIRED alsa)
-pkg_check_modules(PC_LIBCONFIG REQUIRED libconfig)
-pkg_check_modules(PC_PULSEAUDIO REQUIRED libpulse-simple)
-
-include_directories("${PROJECT_SOURCE_DIR}/include")
-
-# Compile in release mode if not set
-if(NOT CMAKE_BUILD_TYPE)
-    SET(CMAKE_BUILD_TYPE "Release")
-endif(NOT CMAKE_BUILD_TYPE)
-
-if(ODAS_FORCE_BIN_AND_LIB_DIRS)
-    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/bin")
-    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/lib")
+if (LINUXSOUND)
+    find_package(PkgConfig REQUIRED)
+    include_directories(/opt/alsa-lib/include)
+    link_directories(/opt/alsa-lib/lib)
+    pkg_check_modules(PC_PULSEAUDIO REQUIRED libpulse-simple)
 endif()
 
-#Add base directory for includes (global)
-include_directories(include/odas)
 
 set(SRC
 
@@ -129,6 +120,7 @@ set(SRC
     src/utils/random.c
     src/utils/transcendental.c
 
+    # async/asynchronous 的缩写
     src/aconnector/acon_categories.c
     src/aconnector/acon_hops.c
     src/aconnector/acon_pots.c
@@ -203,15 +195,25 @@ else()
     add_library(odas STATIC ${SRC})
 endif()
 
-target_link_libraries(odas
-    PUBLIC
-    ${PC_FFTW3_LIBRARIES}
-    ${PC_ALSA_LIBRARIES}
-    ${PC_LIBCONFIG_LIBRARIES}
-    ${PC_PULSEAUDIO_LIBRARIES}
-    m
-    pthread
-)
+if (LINUXSOUND)
+    target_link_libraries(odas 
+        PUBLIC 
+        asound 
+        ${PC_PULSEAUDIO_LIBRARIES}
+        libfftw3f.a 
+        libconfig.a
+        m
+        pthread
+    )
+else()
+    target_link_libraries(odas 
+        PUBLIC 
+        libfftw3f.a 
+        libconfig.a
+        m
+        pthread
+    )
+endif()
 
 add_executable(odaslive
     demo/odaslive/main.c
@@ -224,15 +226,30 @@ add_executable(odaslive
 target_link_libraries(odaslive
     odas
 )
-
-add_executable(odasserver
-    demo/odasserver/main.c
+target_include_directories(odaslive 
+    PUBLIC 
+    ${PROJECT_SOURCE_DIR}/include
 )
-target_link_libraries(odasserver
+
+# hhquan add
+add_executable(odastest 
+    demo/main_stream.c 
+    demo/odaslive/configs.c
+    demo/odaslive/objects.c
+    demo/odaslive/parameters.c
+    demo/odaslive/profiler.c
+    demo/odaslive/threads.c
+)
+target_link_libraries(odastest
     odas
 )
+target_include_directories(odastest 
+    PUBLIC 
+    ${PROJECT_SOURCE_DIR}/include
+    ${PROJECT_SOURCE_DIR}/demo/odaslive
+)
 
-if (NOT ODAS_DISABLE_INSTALL)
+if (ODAS_INSTALL_LIBRARY)
     install(TARGETS odas LIBRARY DESTINATION lib)
     install(
         DIRECTORY include/
@@ -240,15 +257,7 @@ if (NOT ODAS_DISABLE_INSTALL)
         FILES_MATCHING
             PATTERN "*.h"
     )
-
     if(ODAS_INSTALL_EXECUTABLES)
-        install(TARGETS odaslive DESTINATION bin)
-        install(TARGETS odasserver DESTINATION bin)
+        install(TARGETS odastest DESTINATION bin)        
     endif()
-endif()
-
-
-if(ODAS_FORCE_BIN_AND_LIB_DIRS)
-    unset(CMAKE_RUNTIME_OUTPUT_DIRECTORY)
-    unset(CMAKE_LIBRARY_OUTPUT_DIRECTORY)
 endif()

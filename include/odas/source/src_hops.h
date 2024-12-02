@@ -35,9 +35,11 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#ifdef LINUXSOUND
 #include <alsa/asoundlib.h>
 #include <pulse/simple.h>
 #include <pulse/error.h>
+#endif
 
 #include "../general/format.h"
 #include "../general/interface.h"
@@ -57,10 +59,12 @@ typedef struct src_hops_obj {
     interface_obj *interface;
 
     FILE * fp;
+#ifdef LINUXSOUND
     snd_pcm_t * ch;
     pa_simple * pa;
     pa_sample_spec ss;
     pa_channel_map cm;
+#endif
     struct sockaddr_in sserver;
     int sid;
 
@@ -77,7 +81,9 @@ typedef struct src_hops_cfg {
 
     format_obj * format;
     interface_obj * interface;
+#ifdef LINUXSOUND
     pa_channel_map * channel_map;
+#endif
 
 } src_hops_cfg;
 

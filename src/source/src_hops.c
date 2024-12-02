@@ -27,6 +27,9 @@
 */
 
 #include <source/src_hops.h>
+#ifndef LINUXSOUND
+#include <unistd.h>
+#endif
 
 src_hops_obj * src_hops_construct(const src_hops_cfg * src_hops_config, const msg_hops_cfg * msg_hops_config) {
 
@@ -43,6 +46,7 @@ src_hops_obj * src_hops_construct(const src_hops_cfg * src_hops_config, const ms
 
     obj->format = format_clone(src_hops_config->format);
     obj->interface = interface_clone(src_hops_config->interface);
+#ifdef LINUXSOUND
     if (src_hops_config->channel_map != NULL)
     {
         // Will not be null if in pulseaudio mode
@@ -54,7 +58,7 @@ src_hops_obj * src_hops_construct(const src_hops_cfg * src_hops_config, const ms
         printf("Error: Pulseaudio interface requires channel map.\n");
         exit(EXIT_FAILURE);
     }
-
+#endif
     memset(obj->bytes, 0x00, 4 * sizeof(char));
 
     if (!((obj->interface->type == interface_file ||
@@ -165,6 +169,7 @@ void src_hops_open_interface_file(src_hops_obj * obj) {
 
 void src_hops_open_interface_soundcard(src_hops_obj * obj) {
 
+#ifdef LINUXSOUND
     snd_pcm_hw_params_t * hw_params;
     snd_pcm_format_t format;
     int err;
@@ -250,11 +255,12 @@ void src_hops_open_interface_soundcard(src_hops_obj * obj) {
         printf("Source hops: Cannot prepare audio interface for use: %s\n", snd_strerror(err));
         exit(EXIT_FAILURE);
     }
-
+#endif
 }
 
 void src_hops_open_interface_pulseaudio(src_hops_obj * obj) {
 
+#ifdef LINUXSOUND
     pa_sample_format_t format;
 
     switch (obj->format->type) {
@@ -301,7 +307,7 @@ void src_hops_open_interface_pulseaudio(src_hops_obj * obj) {
         printf("Source hops: Cannot open pulseaudio device %s: %s\n", obj->interface->deviceName, pa_strerror(err));
         exit(EXIT_FAILURE);
     }
-
+#endif
 }
 
 void src_hops_open_interface_socket(src_hops_obj * obj) {
@@ -363,16 +369,16 @@ void src_hops_close_interface_file(src_hops_obj * obj) {
 }
 
 void src_hops_close_interface_soundcard(src_hops_obj * obj) {
-
+#ifdef LINUXSOUND
     snd_pcm_close(obj->ch);
-
+#endif
 }
    
 void src_hops_close_interface_pulseaudio(src_hops_obj * obj) {
-
+#ifdef LINUXSOUND
     if (obj->pa != NULL)
         pa_simple_free(obj->pa);
-
+#endif
 }
 
 void src_hops_close_interface_socket(src_hops_obj * obj) {
@@ -481,7 +487,7 @@ int src_hops_process_interface_file(src_hops_obj * obj) {
 }
 
 int src_hops_process_interface_soundcard(src_hops_obj * obj) {
-
+#ifdef LINUXSOUND
     unsigned int nSamples;
     int rtnValue;
     int err;
@@ -498,10 +504,13 @@ int src_hops_process_interface_soundcard(src_hops_obj * obj) {
     }
 
     return rtnValue;
+#else
+    return 0;
+#endif
 }
 
 int src_hops_process_interface_pulseaudio(src_hops_obj * obj) {
-
+#ifdef LINUXSOUND
     int rtnValue;
     int err;
 
@@ -517,7 +526,9 @@ int src_hops_process_interface_pulseaudio(src_hops_obj * obj) {
     }
 
     return rtnValue;
-
+#else
+    return 0;
+#endif
 }
 
 
@@ -672,10 +683,11 @@ void src_hops_cfg_destroy(src_hops_cfg * src_hops_config) {
     if (src_hops_config->interface != NULL) {
         interface_destroy(src_hops_config->interface);
     }
+#ifdef LINUXSOUND
     if (src_hops_config->channel_map != NULL) {
         free((void *) src_hops_config->channel_map);
     }
-
+#endif
     free((void *) src_hops_config);
     
 }
