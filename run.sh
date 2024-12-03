@@ -8,6 +8,12 @@
 # step3; make; make install;
 # 执行测试数据：./odaslive -c ReSpeaker.cfg -s
 
+# 2024.12.2第二版不需要再执行run.sh了
+# 如果需要支持本地声卡，需要安装pulse-simple-dev库，然后打开linuxsound即可
+# 现在仍然需要fftw3库和libconfig库
+
+# 2024.12.3第三版增加了流式处理接口
+
 # ./configure --enable-float --enable-shared --prefix=/opt/fftw3
 # ./gitcompile --prefix=/opt/alsa-lib
 # ./configure --prefix=/opt/libconfig

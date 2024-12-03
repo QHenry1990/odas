@@ -701,6 +701,7 @@
         // +-----------------------------------------------------------
 
             // Loop through section II as long as there are frames to process from the resample module
+            int frame1 = 0;
             while(1) {
 
             // +------------------------------------------------------+
@@ -710,7 +711,8 @@
                 // +--------------------------------------------------+
                 // | Module                                           |
                 // +--------------------------------------------------+  
-
+                    frame1++;
+                    // printf("section 1 = %d \n", frame1);
                     begin = clock();
                     rtnResample = mod_resample_process_pop(objs->mod_resample_mics_object);
                     end = clock();
@@ -803,7 +805,15 @@
                     begin = clock();
                     snk_pots_process(objs->snk_pots_ssl_object);
                     end = clock();
-                    prf->snk_pots_ssl_prf += (float) (((double) (end-begin)) / CLOCKS_PER_SEC);                                                
+                    prf->snk_pots_ssl_prf += (float) (((double) (end-begin)) / CLOCKS_PER_SEC);  
+                    unsigned int iPot;
+                    for (iPot = 0; iPot < objs->snk_pots_ssl_object->nPots; iPot++) {
+                        printf("num = %d, x=%1.3f, y=%1.3f, z=%1.3f\n", iPot, 
+                                objs->snk_pots_ssl_object->in->pots->array[iPot*4+0],
+                                objs->snk_pots_ssl_object->in->pots->array[iPot*4+1],
+                                objs->snk_pots_ssl_object->in->pots->array[iPot*4+2]
+                        );
+                    }                                              
 
             // +------------------------------------------------------+
             // | Targets                                              |
@@ -929,22 +939,25 @@
                     mod_resample_process_push(objs->mod_resample_seps_object);
                     end = clock();
                     prf->mod_resample_seps_prf += (float) (((double) (end-begin)) / CLOCKS_PER_SEC);
+                    // printf("separation \n");
 
                     begin = clock();
                     mod_resample_process_push(objs->mod_resample_pfs_object);
                     end = clock();
                     prf->mod_resample_pfs_prf += (float) (((double) (end-begin)) / CLOCKS_PER_SEC);
+                    // printf("postfilter \n");
 
             // +------------------------------------------------------+
             // | SECTION III                                          |
             // +------------------------------------------------------+
-
+                int frame2 = 0;
                 while(1) {
 
                     // +----------------------------------------------+
                     // | Module                                       |
                     // +----------------------------------------------+  
-
+                        frame2++;
+                        // printf("section 2 = %d \n", frame2);
                         begin = clock();
                         rtnResample = mod_resample_process_pop(objs->mod_resample_seps_object);
                         end = clock();
@@ -993,13 +1006,14 @@
 
                     }
 
-
+                int frame3 = 0;
                 while(1) {
 
                     // +----------------------------------------------+
                     // | Module                                       |
                     // +----------------------------------------------+  
-
+                        frame3++;
+                        // printf("section 3 = %d\n", frame3);
                         begin = clock();
                         rtnResample = mod_resample_process_pop(objs->mod_resample_pfs_object);
                         end = clock();
@@ -1083,4 +1097,99 @@
 
         return rtnValue;
 
+    }    
+
+    int threads_single_process_stream(objects * objs, char *mic, char *sep, char *pf, float *position)
+    {
+        int rtnValue = 0;
+        int rtnResample;
+        unsigned int iSink;
+        // 默认16bit-16k，脚本中要求各hopsize长度一致
+
+        /*step1:raw*/ 
+        // source
+        // memcpy(objs->src_hops_mics_object->buffer, mic, objs->src_hops_mics_object->bufferSize*sizeof(char));
+        src_hops_process_format_binary_int16(objs->src_hops_mics_object);
+        // rtnValue = src_hops_process_interface_file(objs->src_hops_mics_object);                    
+        objs->src_hops_mics_object->timeStamp++;
+        objs->src_hops_mics_object->out->timeStamp = objs->src_hops_mics_object->timeStamp;
+        memcpy(objs->src_hops_mics_object->buffer, mic, objs->src_hops_mics_object->bufferSize*sizeof(char));        
+        // connector
+        con_hops_process(objs->con_hops_mics_raw_object);
+        // Mapping
+        mod_mapping_process(objs->mod_mapping_mics_object);
+        // connector
+        con_hops_process(objs->con_hops_mics_map_object);
+        // resample in
+        mod_resample_process_push(objs->mod_resample_mics_object);
+        // resample out
+        rtnResample = mod_resample_process_pop(objs->mod_resample_mics_object);
+        // connector
+        con_hops_process(objs->con_hops_mics_rs_object);
+        // stft
+        mod_stft_process(objs->mod_stft_mics_object);
+        // connector
+        con_spectra_process(objs->con_spectra_mics_object);
+        // noise 
+        mod_noise_process(objs->mod_noise_mics_object);
+        // connector
+        con_powers_process(objs->con_powers_mics_object);
+
+        /*step2:SSL*/
+        mod_ssl_process(objs->mod_ssl_object);
+        con_pots_process(objs->con_pots_ssl_object);
+        // snk_pots_process(objs->snk_pots_ssl_object); // 结果展示：定位
+        unsigned int iPot;
+        for (iPot = 0; iPot < objs->snk_pots_ssl_object->nPots; iPot++) {
+            printf("num = %d, x=%1.3f, y=%1.3f, z=%1.3f\n", iPot, 
+                    objs->snk_pots_ssl_object->in->pots->array[iPot*4+0],
+                    objs->snk_pots_ssl_object->in->pots->array[iPot*4+1],
+                    objs->snk_pots_ssl_object->in->pots->array[iPot*4+2]
+            );
+        }
+
+        // targets
+        inj_targets_process(objs->inj_targets_sst_object);
+        con_targets_process(objs->con_targets_sst_object);
+
+        /*step3:SST*/
+        mod_sst_process(objs->mod_sst_object);
+        con_tracks_process(objs->con_tracks_sst_object);
+        // snk_tracks_process(objs->snk_tracks_sst_object); // 结果展示：跟踪
+
+        /*step4:SSS*/
+        mod_sss_process(objs->mod_sss_object);
+        con_spectra_process(objs->con_spectra_seps_object);
+        con_spectra_process(objs->con_spectra_pfs_object);
+        //istft
+        mod_istft_process(objs->mod_istft_seps_object);
+        mod_istft_process(objs->mod_istft_pfs_object);
+        con_hops_process(objs->con_hops_seps_object);
+        con_hops_process(objs->con_hops_pfs_object);
+        // resample
+        mod_resample_process_push(objs->mod_resample_seps_object);
+        mod_resample_process_push(objs->mod_resample_pfs_object);
+
+        rtnResample = mod_resample_process_pop(objs->mod_resample_seps_object);
+        con_hops_process(objs->con_hops_seps_rs_object);
+        mod_volume_process(objs->mod_volume_seps_object);
+        con_hops_process(objs->con_hops_seps_vol_object);
+        // snk_hops_process(objs->snk_hops_seps_vol_object); // 结果展示：分离数据
+        snk_hops_process_format_binary_int16(objs->snk_hops_seps_vol_object);
+        memcpy(sep, objs->snk_hops_seps_vol_object->buffer, sizeof(char)*objs->snk_hops_seps_vol_object->bufferSize);
+
+        rtnResample = mod_resample_process_pop(objs->mod_resample_pfs_object);
+        con_hops_process(objs->con_hops_pfs_rs_object);
+        mod_volume_process(objs->mod_volume_pfs_object);
+        con_hops_process(objs->con_hops_pfs_vol_object);
+        // snk_hops_process(objs->snk_hops_pfs_vol_object); // 结果展示：后置滤波
+        snk_hops_process_format_binary_int16(objs->snk_hops_pfs_vol_object);
+        memcpy(pf, objs->snk_hops_pfs_vol_object->buffer, sizeof(char)*objs->snk_hops_pfs_vol_object->bufferSize);
+
+        /*step5:Classify*/
+        mod_classify_process(objs->mod_classify_object);
+        con_categories_process(objs->con_categories_object);
+        // snk_categories_process(objs->snk_categories_object); // 结果展示：分类
+
+        return rtnValue;
     }

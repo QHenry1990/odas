@@ -20,4 +20,7 @@
 
     int threads_single_process(objects * objs, profiler * prf);
 
+    // hhquan add; 流式处理方案
+    int threads_single_process_stream(objects * objs, char *mic, char *sep, char *pf, float *position);
+
 #endif
