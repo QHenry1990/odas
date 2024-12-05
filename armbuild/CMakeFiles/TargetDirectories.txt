@@ -1,9 +1,0 @@
-/home/hhquan/workspace/test_hhquan/odas_test/gitee_odas/odas/armbuild/CMakeFiles/odas.dir
-/home/hhquan/workspace/test_hhquan/odas_test/gitee_odas/odas/armbuild/CMakeFiles/odaslive.dir
-/home/hhquan/workspace/test_hhquan/odas_test/gitee_odas/odas/armbuild/CMakeFiles/odastest.dir
-/home/hhquan/workspace/test_hhquan/odas_test/gitee_odas/odas/armbuild/CMakeFiles/edit_cache.dir
-/home/hhquan/workspace/test_hhquan/odas_test/gitee_odas/odas/armbuild/CMakeFiles/rebuild_cache.dir
-/home/hhquan/workspace/test_hhquan/odas_test/gitee_odas/odas/armbuild/CMakeFiles/list_install_components.dir
-/home/hhquan/workspace/test_hhquan/odas_test/gitee_odas/odas/armbuild/CMakeFiles/install.dir
-/home/hhquan/workspace/test_hhquan/odas_test/gitee_odas/odas/armbuild/CMakeFiles/install/local.dir
-/home/hhquan/workspace/test_hhquan/odas_test/gitee_odas/odas/armbuild/CMakeFiles/install/strip.dir
