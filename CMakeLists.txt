@@ -6,16 +6,42 @@ option(LINUXSOUND "build on ubuntu " OFF) # hhquan add
 option(ODAS_INSTALL_LIBRARY "install odas " ON)
 option(ODAS_INSTALL_EXECUTABLES "Install the odaslive and odasserver executables along with the odas library" ON)
 
-include_directories(
-    ${PROJECT_SOURCE_DIR}/include/odas
-    /opt/fftw3/include
-    /opt/libconfig/include
-)
+# 交叉编译 /home/hhquan/Projects/xxx/fftw-3.3.10/armbuild/release
+# include_directories(
+#     ${PROJECT_SOURCE_DIR}/include/odas
+#     /opt/fftw3/include
+#     /opt/libconfig/include
+# )
 
-link_directories(
-    /opt/fftw3/lib
-    /opt/libconfig/lib
-)
+# link_directories(
+#     /opt/fftw3/lib
+#     /opt/libconfig/lib
+# )
+
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux" AND CMAKE_SYSTEM_PROCESSOR STREQUAL "arm")
+    message(STATUS "         Cross - compiling to a Linux ARM system.")
+    include_directories(
+        ${PROJECT_SOURCE_DIR}/include/odas
+        /home/hhquan/Projects/xxx/fftw-3.3.10/armbuild/release/include
+        /home/hhquan/Projects/xxx/libconfig-1.7.3/armbuild/release/include
+    )
+
+    link_directories(
+        /home/hhquan/Projects/xxx/fftw-3.3.10/armbuild/release/lib
+        /home/hhquan/Projects/xxx/libconfig-1.7.3/armbuild/release/lib
+    )
+else()
+    include_directories(
+        ${PROJECT_SOURCE_DIR}/include/odas
+        /opt/fftw3/include
+        /opt/libconfig/include
+    )
+
+    link_directories(
+        /opt/fftw3/lib
+        /opt/libconfig/lib
+    )
+endif()
 
 if (LINUXSOUND)
     find_package(PkgConfig REQUIRED)
@@ -23,7 +49,6 @@ if (LINUXSOUND)
     link_directories(/opt/alsa-lib/lib)
     pkg_check_modules(PC_PULSEAUDIO REQUIRED libpulse-simple)
 endif()
-
 
 set(SRC
 
@@ -233,7 +258,7 @@ target_include_directories(odaslive
 
 # hhquan add
 add_executable(odastest 
-    demo/main_stream.c 
+    demo/demo.c 
     demo/odaslive/configs.c
     demo/odaslive/objects.c
     demo/odaslive/parameters.c

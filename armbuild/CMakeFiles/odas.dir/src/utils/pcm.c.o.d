@@ -1,0 +1,22 @@
+CMakeFiles/odas.dir/src/utils/pcm.c.o: \
+ /home/hhquan/workspace/test_hhquan/odas_test/gitee_odas/odas/src/utils/pcm.c \
+ /home/hhquan/workspace/test_hhquan/odas_test/gitee_odas/odas/include/odas/utils/pcm.h \
+ /home/hhquan/Projects/fh885xv310/tuyaos-ipc-fh885xv310/vendor/fh885x_v310/toolchain/arm-fullhanv3-linux-uclibcgnueabi-b6.2/arm-fullhanv3-linux-uclibcgnueabi/sysroot/usr/include/math.h \
+ /home/hhquan/Projects/fh885xv310/tuyaos-ipc-fh885xv310/vendor/fh885x_v310/toolchain/arm-fullhanv3-linux-uclibcgnueabi-b6.2/arm-fullhanv3-linux-uclibcgnueabi/sysroot/usr/include/features.h \
+ /home/hhquan/Projects/fh885xv310/tuyaos-ipc-fh885xv310/vendor/fh885x_v310/toolchain/arm-fullhanv3-linux-uclibcgnueabi-b6.2/arm-fullhanv3-linux-uclibcgnueabi/sysroot/usr/include/bits/uClibc_config.h \
+ /home/hhquan/Projects/fh885xv310/tuyaos-ipc-fh885xv310/vendor/fh885x_v310/toolchain/arm-fullhanv3-linux-uclibcgnueabi-b6.2/arm-fullhanv3-linux-uclibcgnueabi/sysroot/usr/include/sys/cdefs.h \
+ /home/hhquan/Projects/fh885xv310/tuyaos-ipc-fh885xv310/vendor/fh885x_v310/toolchain/arm-fullhanv3-linux-uclibcgnueabi-b6.2/arm-fullhanv3-linux-uclibcgnueabi/sysroot/usr/include/bits/huge_val.h \
+ /home/hhquan/Projects/fh885xv310/tuyaos-ipc-fh885xv310/vendor/fh885x_v310/toolchain/arm-fullhanv3-linux-uclibcgnueabi-b6.2/arm-fullhanv3-linux-uclibcgnueabi/sysroot/usr/include/bits/huge_valf.h \
+ /home/hhquan/Projects/fh885xv310/tuyaos-ipc-fh885xv310/vendor/fh885x_v310/toolchain/arm-fullhanv3-linux-uclibcgnueabi-b6.2/arm-fullhanv3-linux-uclibcgnueabi/sysroot/usr/include/bits/huge_vall.h \
+ /home/hhquan/Projects/fh885xv310/tuyaos-ipc-fh885xv310/vendor/fh885x_v310/toolchain/arm-fullhanv3-linux-uclibcgnueabi-b6.2/arm-fullhanv3-linux-uclibcgnueabi/sysroot/usr/include/bits/inf.h \
+ /home/hhquan/Projects/fh885xv310/tuyaos-ipc-fh885xv310/vendor/fh885x_v310/toolchain/arm-fullhanv3-linux-uclibcgnueabi-b6.2/arm-fullhanv3-linux-uclibcgnueabi/sysroot/usr/include/bits/nan.h \
+ /home/hhquan/Projects/fh885xv310/tuyaos-ipc-fh885xv310/vendor/fh885x_v310/toolchain/arm-fullhanv3-linux-uclibcgnueabi-b6.2/arm-fullhanv3-linux-uclibcgnueabi/sysroot/usr/include/bits/mathdef.h \
+ /home/hhquan/Projects/fh885xv310/tuyaos-ipc-fh885xv310/vendor/fh885x_v310/toolchain/arm-fullhanv3-linux-uclibcgnueabi-b6.2/arm-fullhanv3-linux-uclibcgnueabi/sysroot/usr/include/bits/mathcalls.h \
+ /home/hhquan/Projects/fh885xv310/tuyaos-ipc-fh885xv310/vendor/fh885x_v310/toolchain/arm-fullhanv3-linux-uclibcgnueabi-b6.2/lib/gcc/arm-fullhanv3-linux-uclibcgnueabi/6.5.0/include-fixed/limits.h \
+ /home/hhquan/Projects/fh885xv310/tuyaos-ipc-fh885xv310/vendor/fh885x_v310/toolchain/arm-fullhanv3-linux-uclibcgnueabi-b6.2/lib/gcc/arm-fullhanv3-linux-uclibcgnueabi/6.5.0/include-fixed/syslimits.h \
+ /home/hhquan/Projects/fh885xv310/tuyaos-ipc-fh885xv310/vendor/fh885x_v310/toolchain/arm-fullhanv3-linux-uclibcgnueabi-b6.2/arm-fullhanv3-linux-uclibcgnueabi/sysroot/usr/include/limits.h \
+ /home/hhquan/Projects/fh885xv310/tuyaos-ipc-fh885xv310/vendor/fh885x_v310/toolchain/arm-fullhanv3-linux-uclibcgnueabi-b6.2/arm-fullhanv3-linux-uclibcgnueabi/sysroot/usr/include/bits/posix1_lim.h \
+ /home/hhquan/Projects/fh885xv310/tuyaos-ipc-fh885xv310/vendor/fh885x_v310/toolchain/arm-fullhanv3-linux-uclibcgnueabi-b6.2/arm-fullhanv3-linux-uclibcgnueabi/sysroot/usr/include/bits/local_lim.h \
+ /home/hhquan/Projects/fh885xv310/tuyaos-ipc-fh885xv310/vendor/fh885x_v310/toolchain/arm-fullhanv3-linux-uclibcgnueabi-b6.2/arm-fullhanv3-linux-uclibcgnueabi/sysroot/usr/include/linux/limits.h \
+ /home/hhquan/Projects/fh885xv310/tuyaos-ipc-fh885xv310/vendor/fh885x_v310/toolchain/arm-fullhanv3-linux-uclibcgnueabi-b6.2/arm-fullhanv3-linux-uclibcgnueabi/sysroot/usr/include/bits/uClibc_local_lim.h \
+ /home/hhquan/Projects/fh885xv310/tuyaos-ipc-fh885xv310/vendor/fh885x_v310/toolchain/arm-fullhanv3-linux-uclibcgnueabi-b6.2/arm-fullhanv3-linux-uclibcgnueabi/sysroot/usr/include/bits/posix2_lim.h

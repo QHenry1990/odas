@@ -1139,6 +1139,7 @@
         mod_ssl_process(objs->mod_ssl_object);
         con_pots_process(objs->con_pots_ssl_object);
         // snk_pots_process(objs->snk_pots_ssl_object); // 结果展示：定位
+        #if 0
         unsigned int iPot;
         for (iPot = 0; iPot < objs->snk_pots_ssl_object->nPots; iPot++) {
             printf("num = %d, x=%1.3f, y=%1.3f, z=%1.3f\n", iPot, 
@@ -1147,6 +1148,7 @@
                     objs->snk_pots_ssl_object->in->pots->array[iPot*4+2]
             );
         }
+        #endif
 
         // targets
         inj_targets_process(objs->inj_targets_sst_object);
