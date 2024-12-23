@@ -1,23 +1,13 @@
 cmake_minimum_required(VERSION 3.26)
 project(odas)
 
+set(CMAKE_BUILD_TYPE "Debug") # Release
 option(ODAS_BUILD_SHARED_LIBRARY "Build shared library" OFF)
 option(LINUXSOUND "build on ubuntu " OFF) # hhquan add
 option(ODAS_INSTALL_LIBRARY "install odas " ON)
 option(ODAS_INSTALL_EXECUTABLES "Install the odaslive and odasserver executables along with the odas library" ON)
 
 # 交叉编译 /home/hhquan/Projects/xxx/fftw-3.3.10/armbuild/release
-# include_directories(
-#     ${PROJECT_SOURCE_DIR}/include/odas
-#     /opt/fftw3/include
-#     /opt/libconfig/include
-# )
-
-# link_directories(
-#     /opt/fftw3/lib
-#     /opt/libconfig/lib
-# )
-
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux" AND CMAKE_SYSTEM_PROCESSOR STREQUAL "arm")
     message(STATUS "         Cross - compiling to a Linux ARM system.")
     include_directories(

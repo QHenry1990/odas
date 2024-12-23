@@ -39,7 +39,11 @@ int main(int argc, char *argv[])
     for (int n=0; n<nframes; n++)
     {
         // printf("+++++++++++++++++++++++++++++++++++ frame = %d\n", n);
-        fread(mic, sizeof(char), objs->src_hops_mics_object->bufferSize, fidr);
+        int rlen = fread(mic, sizeof(char), objs->src_hops_mics_object->bufferSize, fidr);
+        if (rlen<objs->src_hops_mics_object->bufferSize) {
+            printf("read data length  = %d\n", rlen);
+            break;
+        }
         
         threads_single_process_stream(objs, mic, sep, pf, NULL);
         

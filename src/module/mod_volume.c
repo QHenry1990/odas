@@ -49,6 +49,7 @@
     void mod_volume_destroy(mod_volume_obj * obj) {
 
         hop2hop_gain_destroy(obj->hop2hop_gain);
+        free((void *) obj);
 
     }
 
